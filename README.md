@@ -121,13 +121,6 @@ cd ../backend && npm run dev
 
 ---
 
-## 💡 Inspired By
-
-<div align="center">
-  <img src="https://i.postimg.cc/wT0tKQ6d/banner-inspired.png" alt="Inspired by Google Health AI, MyFitnessPal, SnapScan" width="600"/>
-</div>
-
----
 
 ## ✨ Features
 
