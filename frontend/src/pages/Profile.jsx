@@ -499,39 +499,63 @@ function Profile() {
               </div>
 
               {/* Quick Stats */}
-              <div className={`rounded-3xl p-6 border ${
-                isDark
-                  ? "bg-slate-800/50 border-slate-700"
-                  : "bg-white border-gray-200"
-              }`}>
-                <h4 className={`font-bold text-sm mb-4 ${isDark ? "text-gray-200" : "text-gray-900"}`}>
-                  Platform Benefits
-                </h4>
-                <div className="space-y-3">
-                  {[
-                    { label: "AI-Powered Analysis", value: "Instant" },
-                    { label: "Nutrition Database", value: "500K+ Items" },
-                    { label: "Accuracy Rate", value: "99.2%" }
-                  ].map((stat, idx) => (
-                    <motion.div
-                      key={idx}
-                      className="flex items-center justify-between"
-                      initial={{ opacity: 0, x: -10 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 0.5 + idx * 0.1 }}
-                    >
-                      <span className={`text-xs ${isDark ? "text-gray-400" : "text-gray-600"}`}>
-                        {stat.label}
-                      </span>
-                      <span className={`text-sm font-bold ${
-                        isDark ? "text-indigo-400" : "text-indigo-600"
-                      }`}>
-                        {stat.value}
-                      </span>
-                    </motion.div>
-                  ))}
-                </div>
-              </div>
+              <div
+  className={`rounded-3xl p-6 border ${
+    isDark
+      ? "bg-slate-800/50 border-slate-700"
+      : "bg-white border-gray-200"
+  }`}
+>
+  <h4
+    className={`font-semibold text-sm mb-4 ${
+      isDark ? "text-gray-200" : "text-gray-900"
+    }`}
+  >
+    Platform Highlights
+  </h4>
+
+  <div className="space-y-3">
+    {[
+      {
+        label: "AI-Assisted Insights",
+        value: "Automated analysis support"
+      },
+      {
+        label: "Food Reference Data",
+        value: "Extensive item coverage"
+      },
+      {
+        label: "Result Confidence",
+        value: "Continuously improved models"
+      }
+    ].map((stat, idx) => (
+      <motion.div
+        key={idx}
+        className="flex items-center justify-between"
+        initial={{ opacity: 0, x: -10 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ delay: 0.5 + idx * 0.1 }}
+      >
+        <span
+          className={`text-xs ${
+            isDark ? "text-gray-400" : "text-gray-600"
+          }`}
+        >
+          {stat.label}
+        </span>
+
+        <span
+          className={`text-xs font-medium ${
+            isDark ? "text-indigo-300" : "text-indigo-600"
+          }`}
+        >
+          {stat.value}
+        </span>
+      </motion.div>
+    ))}
+  </div>
+</div>
+
             </motion.div>
           </div>
         </motion.div>
