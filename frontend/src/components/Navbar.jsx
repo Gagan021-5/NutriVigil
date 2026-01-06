@@ -1,22 +1,17 @@
 import { Link, useLocation } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Sun, Moon, Menu, X } from "lucide-react";
-import { useThemeTranslation } from '../hooks/useThemeTranslation';
+import { useThemeTranslation } from "../hooks/useThemeTranslation";
 import { useTheme } from "../contexts/ThemeContext";
 import { useState } from "react";
 import nutrivigile from "../assets/nutrivigile.jpeg";
 import LanguagePicker from "./LanguagePicker";
 
-
 const Navbar = () => {
   const { pathname } = useLocation();
   const { theme, toggleTheme } = useTheme();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { t, i18n } = useThemeTranslation();
-
-  const changeLanguage = (e) => {
-    i18n.changeLanguage(e.target.value);
-  };
+  const { t } = useThemeTranslation();
 
   const navItem = (path, label, isMobile = false) => (
     <motion.div
@@ -26,19 +21,18 @@ const Navbar = () => {
     >
       <Link
         to={path}
-        className={`text-sm sm:text-[15px] font-medium px-4 py-2 rounded-lg transition-all duration-300 no-underline block ${pathname === path
-          ? theme === "dark"
-            ? "text-blue-400 bg-white/10 border border-white/20"
-            : "text-blue-600 bg-blue-50 border border-blue-200"
-          : theme === "dark"
-            ? "text-gray-300 hover:text-white hover:bg-white/10"
-            : "text-gray-700 hover:text-gray-900 hover:bg-gray-100"
-          }`}
+        className={`block px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300
+          ${
+            pathname === path
+              ? theme === "dark"
+                ? "text-blue-400 bg-white/10 border border-white/20"
+                : "text-blue-600 bg-blue-50 border border-blue-200"
+              : theme === "dark"
+              ? "text-gray-300 hover:text-white hover:bg-white/10"
+              : "text-gray-700 hover:text-gray-900 hover:bg-gray-100"
+          }
+        `}
       >
-
-
-
-        
         {label}
       </Link>
     </motion.div>
@@ -46,97 +40,105 @@ const Navbar = () => {
 
   return (
     <motion.nav
-      className={`backdrop-blur-xl shadow-lg sticky top-0 z-50 border-b transition-colors duration-300 ${theme === "dark"
-        ? "bg-black/20 border-white/10"
-        : "bg-white/80 border-gray-200"
-        }`}
-      initial={{ y: -100 }}
+      className={`sticky top-0 z-50 backdrop-blur-xl border-b transition-colors duration-300
+        ${
+          theme === "dark"
+            ? "bg-black/30 border-white/10"
+            : "bg-white/80 border-gray-200"
+        }
+      `}
+      initial={{ y: -80 }}
       animate={{ y: 0 }}
-      transition={{ duration: 0.5, ease: "easeOut" }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
     >
-      
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4 flex justify-between items-center">
-
+      {/* Navbar Content */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex justify-between items-center">
+        {/* Logo */}
         <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-          <Link
-            to="/"
-            className={`text-xl font-bold no-underline transition-colors ${theme === "dark" ? "text-[#667eea]" : "text-[#667eea]"
-              }`}
-          >
-              <div className={`flex items-center gap-2 sm:gap-3 truncate ${theme == "dark" ? "text-[#667eea]" : "text-black"}`}>
-
-              {" "}
-              <img className="w-8 h-8" src={nutrivigile} alt="logo"></img>{" "}
-              {t('appName')}
-            </div>
+          <Link to="/" className="flex items-center gap-3 no-underline">
+            <img src={nutrivigile} alt="logo" className="w-8 h-8 rounded" />
+            <span className="text-lg font-bold text-[#667eea]">
+              {t("appName")}
+            </span>
           </Link>
         </motion.div>
 
-        <div className="flex items-center gap-6">
-          <div className="hidden md:flex gap-6">
-            {navItem("/", t("nav.home"))}
-            {navItem("/profile", t("nav.profile"))}
-          </div>
+        {/* Desktop Nav */}
+        <div className="hidden md:flex items-center gap-6">
+          {navItem("/", t("nav.home"))}
+          {navItem("/profile", t("nav.profile"))}
+        </div>
 
+        {/* Right Actions */}
+        <div className="flex items-center gap-3">
           {/* Theme Toggle */}
           <motion.button
             onClick={toggleTheme}
-            className={`p-2 min-h-[44px] min-w-[44px] rounded-lg  cursor-pointer transition-all duration-300 flex items-center justify-center border ${theme === "dark"
-              ? "bg-white/10  hover:bg-white/20 border-white/20"
-              : "bg-gray-100 hover:bg-gray-200 border-gray-300"
-              }`}
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
+            className={`p-2 rounded-lg border transition-all
+              ${
+                theme === "dark"
+                  ? "bg-white/10 hover:bg-white/20 border-white/20"
+                  : "bg-gray-100 hover:bg-gray-200 border-gray-300"
+              }
+            `}
             aria-label="Toggle theme"
           >
             {theme === "dark" ? (
-              <Sun className="w-5 h-5 text-white/90" />
+              <Sun className="w-5 h-5 text-white" />
             ) : (
               <Moon className="w-5 h-5 text-blue-600" />
             )}
           </motion.button>
-          <div className="block">
-  <LanguagePicker />
-</div>
 
-          {/* Mobile Hamburger Button */}
+          {/* Language Picker */}
+          <LanguagePicker />
+
+          {/* Mobile Menu Button */}
           <button
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className={`md:hidden p-2 min-h-[44px] min-w-[44px] rounded-lg transition-all duration-300 flex items-center justify-center border ${theme === "dark"
-              ? "bg-white/10 hover:bg-white/20 border-white/20"
-              : "bg-gray-100 hover:bg-gray-200 border-gray-300"
-              }`}
+            onClick={() => setIsMobileMenuOpen((prev) => !prev)}
+            className={`md:hidden p-2 rounded-lg border transition-all
+              ${
+                theme === "dark"
+                  ? "bg-white/10 hover:bg-white/20 border-white/20"
+                  : "bg-gray-100 hover:bg-gray-200 border-gray-300"
+              }
+            `}
             aria-label="Toggle menu"
           >
             {isMobileMenuOpen ? (
-              <X
-                className={`w-5 h-5 ${theme === "dark" ? "text-white" : "text-gray-900"
-                  }`}
-              />
+              <X className="w-5 h-5" />
             ) : (
-              <Menu
-                className={`w-5 h-5 ${theme === "dark" ? "text-white" : "text-gray-900"
-                  }`}
-              />
+              <Menu className="w-5 h-5" />
             )}
           </button>
         </div>
       </div>
 
       {/* Mobile Menu */}
-      {isMobileMenuOpen && (
-        <div
-          className={`md:hidden border-t transition-colors ${theme === "dark" ? "border-white/10" : "border-gray-200"
-            }`}
-        >
-
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
+            className={`md:hidden overflow-hidden border-t
+              ${
+                theme === "dark"
+                  ? "border-white/10 bg-black/40"
+                  : "border-gray-200 bg-white"
+              }
+            `}
+          >
             <div className="px-4 py-4 flex flex-col gap-2">
-
-            {navItem("/", t("nav.home"), true)}
-            {navItem("/profile", t("nav.profile"), true)}
-          </div>
-        </div>
-      )}
+              {navItem("/", t("nav.home"), true)}
+              {navItem("/profile", t("nav.profile"), true)}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.nav>
   );
 };
