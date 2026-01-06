@@ -15,8 +15,8 @@ const Navbar = () => {
 
   const navItem = (path, label, isMobile = false) => (
     <motion.div
-      whileHover={!isMobile ? { scale: 1.05 } : {}}
-      whileTap={!isMobile ? { scale: 0.95 } : {}}
+      whileHover={!isMobile ? { scale: 1.05 } : undefined}
+      whileTap={!isMobile ? { scale: 0.95 } : undefined}
       onClick={() => isMobile && setIsMobileMenuOpen(false)}
     >
       <Link
@@ -40,6 +40,9 @@ const Navbar = () => {
 
   return (
     <motion.nav
+      initial={{ y: -80 }}
+      animate={{ y: 0 }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
       className={`sticky top-0 z-50 backdrop-blur-xl border-b transition-colors duration-300
         ${
           theme === "dark"
@@ -47,16 +50,17 @@ const Navbar = () => {
             : "bg-white/80 border-gray-200"
         }
       `}
-      initial={{ y: -80 }}
-      animate={{ y: 0 }}
-      transition={{ duration: 0.4, ease: "easeOut" }}
     >
       {/* Navbar Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex justify-between items-center">
         {/* Logo */}
         <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
           <Link to="/" className="flex items-center gap-3 no-underline">
-            <img src={nutrivigile} alt="logo" className="w-8 h-8 rounded" />
+            <img
+              src={nutrivigile}
+              alt="logo"
+              className="w-8 h-8 rounded"
+            />
             <span className="text-lg font-bold text-[#667eea]">
               {t("appName")}
             </span>
@@ -76,6 +80,7 @@ const Navbar = () => {
             onClick={toggleTheme}
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
+            aria-label="Toggle theme"
             className={`p-2 rounded-lg border transition-all
               ${
                 theme === "dark"
@@ -83,7 +88,6 @@ const Navbar = () => {
                   : "bg-gray-100 hover:bg-gray-200 border-gray-300"
               }
             `}
-            aria-label="Toggle theme"
           >
             {theme === "dark" ? (
               <Sun className="w-5 h-5 text-white" />
@@ -98,6 +102,7 @@ const Navbar = () => {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsMobileMenuOpen((prev) => !prev)}
+            aria-label="Toggle menu"
             className={`md:hidden p-2 rounded-lg border transition-all
               ${
                 theme === "dark"
@@ -105,7 +110,6 @@ const Navbar = () => {
                   : "bg-gray-100 hover:bg-gray-200 border-gray-300"
               }
             `}
-            aria-label="Toggle menu"
           >
             {isMobileMenuOpen ? (
               <X className="w-5 h-5" />
