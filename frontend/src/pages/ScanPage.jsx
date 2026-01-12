@@ -7,6 +7,7 @@ import {
   CheckCircle,
   AlertCircle,
   XCircle,
+  Volume2
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "../contexts/ThemeContext";
@@ -17,7 +18,7 @@ const STORAGE_KEY = "nutriguard";
 
 function ScanPage() {
   const { theme } = useTheme();
-  const { t } = useTranslation();
+  const { t, i18n} = useTranslation();
 
   const [selectedFile, setSelectedFile] = useState(null);
   const [preview, setPreview] = useState(null);
@@ -56,12 +57,12 @@ function ScanPage() {
       const res = await axios.post("https://nutb.onrender.com/analyze", {
         condition: condition,
         query: followUpQuestion,
-        foodName: result.food_name  
+        foodName: result.food_name
       });
 
       // Update the result state with the AI's answer to the voice query
       setVoiceAnswer(res.data);
-      setFollowUpQuestion("");  
+      setFollowUpQuestion("");
     } catch (err) {
       setError(
         err.response?.data?.error ||
@@ -107,7 +108,7 @@ function ScanPage() {
       formData.append("condition", condition);
 
       const res = await axios.post("https://nutb.onrender.com/analyze", formData);
-      
+
       setResult(res.data);
     } catch (err) {
       setError(
@@ -130,6 +131,20 @@ function ScanPage() {
     green: t('safety.safe'),
     yellow: t('safety.moderate'),
     red: t('safety.unsafe'),
+  };
+
+  const speak = (text) => {
+    window.speechSynthesis.cancel(); 
+    const utterance = new SpeechSynthesisUtterance(text);
+
+  
+    const langMap = { en: 'en-US', hi: 'hi-IN', es: 'es-ES', fr: 'fr-FR' };
+    utterance.lang = langMap[i18n.language] || 'en-US';
+
+    utterance.pitch = 1.1;  
+    utterance.rate = 1.0;
+
+    window.speechSynthesis.speak(utterance);
   };
 
   return (
@@ -365,6 +380,13 @@ function ScanPage() {
                     className={`mt-7 p-6 rounded-2xl border-l-4 ${theme === 'dark' ? "bg-purple-500/10 border-purple-500" : "bg-purple-50 border-purple-500"}`}
                   >
                     <h3 className="text-s font-bold text-purple-400 uppercase mb-2">Here’s what we found</h3>
+                    <button
+                      onClick={() => speak(voiceAnswer.answer)}
+                      className="p-2 -mt-2 hover:bg-purple-500/20 rounded-full transition-all text-purple-400"
+                      title="Listen to response"
+                    >
+                      <Volume2 size={20} />
+                    </button>
                     {voiceAnswer.answer && (
                       <p className="text-s italic opacity-70">{voiceAnswer.answer}</p>
                     )}
