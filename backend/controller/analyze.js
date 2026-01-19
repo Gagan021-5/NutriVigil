@@ -28,12 +28,12 @@ export const analyzeFood = async (req, res) => {
 
       const result = await geminiModel.generateContent(followUpPrompt);
       const responseText = result.response.candidates[0].content.parts[0].text;
-      
+
       try {
         const parsedData = parseGeminiJson(responseText);
-        return res.json({ 
-          food_name: existingFoodName, 
-          ...parsedData 
+        return res.json({
+          food_name: existingFoodName,
+          ...parsedData
         });
       } catch (parseError) {
         console.error("Follow-up query JSON parse error:", parseError);
@@ -51,7 +51,7 @@ export const analyzeFood = async (req, res) => {
       return res.status(400).json({ error: "No condition provided" });
 
     const imagePath = req.file.path;
-    
+
     const base64 = imageToBase64(imagePath);
     const mimeType = getMimeType(imagePath);
 
@@ -71,7 +71,7 @@ export const analyzeFood = async (req, res) => {
       identify.response.candidates[0].content.parts[0].text.trim();
 
     // Nutrition API
-     const nutrition = await axios.get(
+    const nutrition = await axios.get(
       "https://api.api-ninjas.com/v1/nutrition",
       {
         params: { query: foodName },
@@ -81,19 +81,23 @@ export const analyzeFood = async (req, res) => {
 
     //check
     const nutritionData = nutrition.data && nutrition.data.length > 0 ? nutrition.data[0] : {};
-   
+
     // Analysis Prompt
     const analysisPrompt = `
       Here is the nutritional data for ${foodName}: 
       ${JSON.stringify(nutritionData)}
 
       Analyze this food for someone with the condition: "${condition}"
+      If the food is not "green", suggest 2-3 healthy alternatives safe for this condition.
       Output ONLY JSON in this exact format:
       {
         "traffic_light": "green" | "yellow" | "red",
         "verdict_title": "",
         "reason": "",
-        "suggestion": ""
+        "suggestion": "",
+        "alternatives": [
+      { "name": "Alternative Name", "why": "Why it is safe" }
+    ]
       }
     `;
 
@@ -107,7 +111,7 @@ export const analyzeFood = async (req, res) => {
 
     try {
       cleanJson = parseGeminiJson(analysisText);
-      
+
       res.json({
         food_name: foodName,
         nutrition: nutritionData,
@@ -124,8 +128,8 @@ export const analyzeFood = async (req, res) => {
       //delete upload
       fs.unlinkSync(imagePath);
     }
-  } 
-  
+  }
+
   catch (err) {
     console.error(err);
     res.status(500).json({
